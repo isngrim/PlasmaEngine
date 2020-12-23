@@ -40,3 +40,6 @@
 [submodule "Libgit2"]
 	path = External/Libgit2/Repo
 	url = https://github.com/WelderFoundation/WelderLibgit2.git
+[submodule "BGFX"]
+	path = External/BGFX/Repo
+	url = https://github.com/widberg/bgfx.cmake.git

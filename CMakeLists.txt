@@ -17,8 +17,8 @@ endif()
 
 project(Plasma)
 
-set(PLASMA_RENDERER "OpenGL" CACHE STRING "Rendering backend used by the engine")
-set_property(CACHE PLASMA_RENDERER PROPERTY STRINGS OpenGL DirectX12 Vulkan) 
+set(PLASMA_RENDERER "BGFX" CACHE STRING "Rendering backend used by the engine")
+set_property(CACHE PLASMA_RENDERER PROPERTY STRINGS OpenGL BGFX) 
 
 add_definitions(-DPlasmaMsSinceEpoch=${PLASMA_MS_SINCE_EPOCH})
 add_definitions(-DPlasmaBranchName="${PLASMA_BRANCH}")
