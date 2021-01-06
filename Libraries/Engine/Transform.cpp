@@ -127,6 +127,8 @@ LightningDefineType(Transform, builder, type)
 
   LightningBindMethod(SetEulerAnglesXYZ);
 
+  LightningBindMethod(Reset);
+
   LightningBindGetterSetter(EulerAngles);
 
   LightningBindGetterSetter(LocalScale);

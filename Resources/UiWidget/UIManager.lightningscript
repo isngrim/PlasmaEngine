@@ -1,6 +1,6 @@
 // MIT Licensed (see LICENSE.md).
 
-class UISelection : LightningComponent
+class UIManager : LightningComponent
 {
     [Group("Material")][Property]
     var MaterialSample : CogPath;

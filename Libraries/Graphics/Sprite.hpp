@@ -152,6 +152,8 @@ public:
   /// Get the position in world space of a character by index.
   Vec3 GetCharacterPosition(int characterIndex);
 
+  int GetCharacterIndex(float localXPosition);
+
   // Internal
 
   Vec2 GetLocalCenter();

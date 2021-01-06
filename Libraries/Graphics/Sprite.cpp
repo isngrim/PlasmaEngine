@@ -335,6 +335,7 @@ LightningDefineType(SpriteText, builder, type)
   LightningBindMethod(MeasureText);
   LightningBindMethod(MeasureGivenText);
   LightningBindMethod(GetCharacterPosition);
+  LightningBindMethod(GetCharacterIndex);
 }
 
 void SpriteText::Serialize(Serializer& stream)
@@ -503,6 +504,12 @@ Vec3 SpriteText::GetCharacterPosition(int characterIndex)
 
   return mTransform->TransformPoint(Vec3(findPosition.mCharPosition, 0.0f));
 }
+
+  int SpriteText::GetCharacterIndex(float localXPosition)
+  {
+    return mFont->GetRenderFont(mFontSize)->GetPosition(mText, localXPosition, 1.0, TextRounding::Nearest);
+  }
+
 
 Vec2 SpriteText::GetLocalCenter()
 {

@@ -1,0 +1,74 @@
+// MIT Licensed (see LICENSE.md).
+
+class UISelection
+{
+  var Range : UIRange;
+  var Anchor : Integer;
+  var Hover : Integer;
+  var Caret : Cog;
+  var SelectionsPerLine = Array[Cog]();
+  
+  var IsEmpty : Boolean
+  {
+    get { return this.Range.IsEmpty; }
+  }
+  
+  [Static]
+  function Less(lhs : UISelection, rhs : UISelection) : Boolean
+  {
+    return UIRange.Less(lhs.Range, rhs.Range);
+  }
+  
+  function SetAllIndices(index : Integer)
+  {
+    this.Range.SetAllIndices(index);
+    this.Hover = index;
+    this.Anchor = index;
+  }
+  
+  function Clear()
+  {
+    if(this.Caret != null)
+      this.Caret.Destroy();
+      
+    this.ClearSelectionsPerLine();
+  }
+  
+  function ClearSelectionsPerLine()
+  {
+    foreach(var cog in this.SelectionsPerLine)
+      cog.Destroy();
+      
+    this.SelectionsPerLine.Clear();
+  }
+}
+
+class UIElement : LightningComponent
+{
+   // Index relative to the line that it is within
+  var Index : Integer;
+  var Range : UIRange;
+  var Line : UILine;
+}
+
+class UILine : LightningComponent
+{
+  var Range : UIRange;
+  
+  // The width of all characters on the line
+  // (the line widget itself extends all the way to the edge)
+  var Width : Real;
+  
+  // Zero based line index
+  var Index : Integer;
+  
+  var Elements = Array[UIElement]();
+}
+
+class UICaret
+{
+  var Index : Integer;
+  var WorldPosition : Real2;
+  var UILine : UILine;
+  var UIElement :  UIElement;
+}

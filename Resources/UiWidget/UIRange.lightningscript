@@ -1,0 +1,84 @@
+struct UIRange
+{
+  var Start : Integer;
+  var End : Integer;
+  
+  constructor()
+  {
+  }
+  
+  constructor(start : Integer, end :Integer)
+  {
+  }
+  
+  var IsEmpty : Boolean
+  {
+    get { return this.Start == this.End; }
+  }
+  
+  var Count : Integer
+  {
+    get { return this.End - this.Start; }
+  }
+  
+  function SetInOrder(a : Integer, b : Integer)
+  {
+    if(a < b)
+    {
+      this.Start = a;
+      this.End = b;
+    }
+    else
+    {
+      this.Start = b;
+      this.Start = a;
+    } 
+  }
+  
+  function SetAllIndices(index : Integer)
+  {
+    this.Start = index;
+    this.End = index;
+  }
+  
+  [Static]
+  function Less(lhs : UIRange, rhs : UIRange) : Boolean
+  {
+    if(lhs.Start == rhs.Start)
+      return lhs.End < rhs.End;
+      
+    return lhs.Start < rhs.Start;
+  }
+  
+  function Contains(index : Integer) : Boolean
+  {
+    return index >= this.Start && index < this.End;
+  }
+  
+  function Contains(uiRange : UIRange) : Boolean
+  {
+    return uiRange.End >= this.Start && uiRange.Start < this.End;
+  }
+  
+  function Intersection(uiRange : UIRange) : UIRange
+  {
+    var start = Math.Max(this.Start, uiRange.Start);
+    var end = Math.Min(this.End, uiRange.End);
+    
+    return UIRange(start, end);
+  }
+  
+  function Overlaps(uiRange : UIRange) : Boolean
+  {
+    return !(this.End < uiRange.Start || uiRange.End < this.Start);
+  }
+  
+  function Expand(index : Integer)
+  {
+    if(index < this.Start)
+      this.Start = index;
+      
+    if(index > this.End)
+      this.End = index;
+  }
+}

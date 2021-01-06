@@ -1,0 +1,19 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct UICaretShader
+{
+  // BuiltIn utility
+  // Time incrementing every frame
+  [AppBuiltInInput] var FrameTime : Real;
+  
+  [FragmentInput][StageInput][Output] var Color : Real4;
+  
+  [Input] var Period : Real = 1.0;
+
+  function Main()
+  {
+    var t = this.FrameTime * Math.Pi * 2.0 / this.Period;
+    this.Color.W *= (Math.Sin(t) + 1.0) / 2.0;
+  }
+}
