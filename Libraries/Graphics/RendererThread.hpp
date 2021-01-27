@@ -1,6 +1,7 @@
 // MIT Licensed (see LICENSE.md).
 
 #pragma once
+#include "Renderer.hpp"
 
 namespace Plasma
 {
@@ -86,7 +87,7 @@ class CreateRendererJob : public WaitRendererJob
 public:
   void Execute() override;
 
-  OsHandle mMainWindowHandle;
+  RendererInitializeData mInitializeData;
   String mError;
 };
 

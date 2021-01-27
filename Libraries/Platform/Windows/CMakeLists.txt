@@ -3,13 +3,27 @@ add_library(Platform)
 plasma_setup_library(Platform ${CMAKE_CURRENT_LIST_DIR} TRUE)
 plasma_use_precompiled_header(Platform ${CMAKE_CURRENT_LIST_DIR})
 
-if(${PLASMA_RENDERER} MATCHES "BGFX")
+if(${PLASMA_RENDERER} MATCHES "Vulkan")
   set(rendererSource
-        ${CMAKE_CURRENT_LIST_DIR}/../BGFX/BGFXRenderer.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/../BGFX/BGFXRenderer.hpp 
-  )
-  set(rendererLib
-    bgfx
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanRenderer.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanRenderer.hpp
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanInitialization.hpp
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanValidationLayer.hpp
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanStandard.hpp
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanHeaders/vk_icd.h
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanHeaders/vk_layer.h
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanHeaders/vk_platform.h
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanHeaders/vk_sdk_platform.h
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanHeaders/vulkan.h
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanHeaders/vulkan.hpp
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanHeaders/vulkan_android.h
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanHeaders/vulkan_beta.h
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanHeaders/vulkan_core.h
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanHeaders/vulkan_directfb.h
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanHeaders/vulkan_fuchsia.h
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanHeaders/vulkan_ggp.h
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanHeaders/vulkan_win32.h
+        $ENV{VULKAN_SDK}/Include/
   )
 else(${PLASMA_RENDERER} MATCHES "OpenGL")
   set(rendererSource
@@ -72,6 +86,7 @@ target_sources(Platform
 plasma_target_includes(Platform
   PUBLIC
     Common
+    Meta
 )
 
 target_link_libraries(Platform

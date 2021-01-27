@@ -682,8 +682,13 @@ void GraphicsEngine::CreateRenderer(OsWindow* mainWindow)
 {
   OsHandle mainWindowHandle = mainWindow->GetWindowHandle();
 
+  RendererInitializeData initialiseData;
+  initialiseData.mTitle = mainWindow->GetTitle();
+  initialiseData.mResolution = mainWindow->GetClientSize();
+  initialiseData.mWindow = mainWindowHandle;
+  
   CreateRendererJob* rendererJob = new CreateRendererJob();
-  rendererJob->mMainWindowHandle = mainWindowHandle;
+  rendererJob->mInitializeData = initialiseData;
   AddRendererJob(rendererJob);
   rendererJob->WaitOnThisJob();
 

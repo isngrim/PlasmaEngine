@@ -93,8 +93,8 @@ void WaitRendererJob::WaitOnThisJob()
 
 void CreateRendererJob::Execute()
 {
-  ZoneScoped;
-  PL::gRenderer = CreateRenderer(mMainWindowHandle, mError);
+  ZoneScoped;  
+  PL::gRenderer = CreateRenderer(mInitializeData, mError);
   mWaitEvent.Signal();
 }
 
