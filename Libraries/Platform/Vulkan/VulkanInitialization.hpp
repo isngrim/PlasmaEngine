@@ -83,8 +83,25 @@ namespace Plasma
 
         return Status(StatusState::Success, "Surface Created");
 #else        
-#error WICKEDENGINE VULKAN DEVICE ERROR: PLATFORM NOT SUPPORTED
+        #error ERROR: PLATFORM NOT SUPPORTED
 #endif
+    }
+
+    inline void SelectPhysicalDevice(VulkanRuntimeData& runtimeData)
+    {
+        runtimeData.mPhysicalDevice = VK_NULL_HANDLE;
+
+        PhysicsDeviceResultData resultData;
+        PhysicsDeviceSelectionData selectionData;
+        selectionData.mInstance = runtimeData.mInstance;
+        selectionData.mSuitabilityData.mUserData = &runtimeData;
+        selectionData.mSuitabilityData.mSurface = runtimeData.mSurface;
+        selectionData.mSuitabilityData.mDeviceSuitabilityFn = &IsDeviceSuitable;
+
+        SelectPhysicsDevice(selectionData, resultData);
+        QueryPhysicalDeviceLimits(resultData.mPhysicalDevice, runtimeData.mDeviceLimits);
+
+        runtimeData.mPhysicalDevice = resultData.mPhysicalDevice;
     }
     
     inline Status InitializeVulkan(RendererInitializeData initializeData, VulkanRuntimeData& vulkanRuntimeData)

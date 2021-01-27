@@ -9,6 +9,7 @@ if(${PLASMA_RENDERER} MATCHES "Vulkan")
         ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanRenderer.hpp
         ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanInitialization.hpp
         ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanValidationLayer.hpp
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanPhysicalDevice.hpp
         ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanStandard.hpp
         ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanHeaders/vk_icd.h
         ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanHeaders/vk_layer.h
