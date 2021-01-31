@@ -4,14 +4,6 @@
 
 namespace Plasma
 {
-    struct VulkanRuntimeData
-    {
-        VkInstance mInstance = VK_NULL_HANDLE;
-        VkSurfaceKHR mSurface = VK_NULL_HANDLE;
-        VkPhysicalDevice mPhysicalDevice = VK_NULL_HANDLE;
-        VkDevice mDevice = VK_NULL_HANDLE;
-    };
-    
     class VulkanRendeer : public Renderer
     {
     public:
@@ -51,6 +43,8 @@ namespace Plasma
 
     private:
         VulkanRuntimeData mRuntimeData;
+        VulkanFeatureData mFeatureData;
+        VulkanPropertyData mPropertyData;
         uint mWidth;
         uint mHeight;
     };

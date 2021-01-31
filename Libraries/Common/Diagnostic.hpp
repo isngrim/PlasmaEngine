@@ -77,7 +77,7 @@ private:
 #  if defined(PlasmaDebug)
 #    define ZERO_ENABLE_ERROR 1
 #  else
-#    define ZERO_ENABLE_ERROR 0
+#    define PLASMA_ENABLE_ERROR 0
 #  endif
 #endif
 
@@ -92,7 +92,7 @@ static int gConditionalFalseConstant = 0;
       PlasmaDebugBreak();                                                                                                \
   } while (gConditionalFalseConstant)
 
-#if ZERO_ENABLE_ERROR
+#if PLASMA_ENABLE_ERROR
 
 #  define UnusedParameter(param) (void)param
 

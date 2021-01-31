@@ -29,10 +29,15 @@ StringParam GetCoreVertexFragmentName(CoreVertexType::Enum type)
 }
 
 GraphicsDriverSupport::GraphicsDriverSupport() :
-    mTextureCompression(false),
-    mMultiTargetBlend(false),
-    mSamplerObjects(false),
-    mIntel(false)
+    mRaytracing(false),
+    mBindlessDescriptors(false),
+    mMeshShaders(false),
+    mRaytracingInline(false),
+    mVariableRateShading(false),
+    mVariableRateShadingTier2(false),
+    mUAVLoadFormatCommon(false),
+    mUAVFormatR11G11B10F(false),
+    mTesselation(false)
 {
 }
 

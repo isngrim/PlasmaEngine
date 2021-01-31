@@ -1,10 +1,12 @@
 #include "Precompiled.hpp"
+#include "VulkanStandard.hpp"
+
 
 namespace Plasma
 {
     VulkanRendeer::VulkanRendeer(RendererInitializeData initializeData, String& error)
     {
-        
+        InitializeVulkan(initializeData, mRuntimeData, mFeatureData, mPropertyData, mDriverSupport);
     }
 
     VulkanRendeer::~VulkanRendeer()

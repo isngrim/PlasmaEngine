@@ -11,6 +11,7 @@
 #include "VulkanHeaders/vulkan_core.h"
 #include "VulkanHeaders/vk_sdk_platform.h"
 
+#include "VulkanEnum.hpp"
 #include "VulkanValidationLayer.hpp"
 #include "VulkanPhysicalDevice.hpp"
 #include "VulkanInitialization.hpp"

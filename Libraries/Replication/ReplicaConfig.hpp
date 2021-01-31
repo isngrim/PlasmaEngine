@@ -304,7 +304,7 @@ DeclareEnum3(ConvergenceState,
 
 //                                 Macros //
 
-#if ZERO_ENABLE_ERROR
+#if PLASMA_ENABLE_ERROR
 
 /// Test the specified condition on all replicas provided
 #  define AssertReplicas(replicas, condition, ...)                                                                     \

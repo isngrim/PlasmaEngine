@@ -44,18 +44,15 @@ namespace Plasma
     public:
         GraphicsDriverSupport();
 
-        // Must be filled out by the renderer in initialization.
-        /// If block compression formats can be sampled by hardware.
-        bool mTextureCompression;
-        /// If blend settings for the output merger stage can be independently set for
-        /// multiple render targets.
-        bool mMultiTargetBlend;
-        /// If texture sampler settings can be uniquely specified per sampler shader
-        /// input.
-        bool mSamplerObjects;
-
-        // For detecting Intel drivers to handle driver bugs.
-        bool mIntel;
+        bool mTesselation;
+        bool mUAVLoadFormatCommon;
+        bool mRaytracing;
+        bool mRaytracingInline;
+        bool mMeshShaders;
+        bool mVariableRateShading;
+        bool mVariableRateShadingTier2;
+        bool mBindlessDescriptors;
+        bool mUAVFormatR11G11B10F;
     };
 
     // Do not reorder, value used to calculate number of vertices per primitive

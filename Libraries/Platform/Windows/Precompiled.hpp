@@ -105,7 +105,3 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #ifdef RunVld
 #  include <vld.h>
 #endif
-
-#if defined(PlasmaRendererVulkan)
-#include "../Vulkan/VulkanRenderer.hpp"
-#endif

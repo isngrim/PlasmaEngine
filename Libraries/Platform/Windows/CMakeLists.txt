@@ -5,6 +5,7 @@ plasma_use_precompiled_header(Platform ${CMAKE_CURRENT_LIST_DIR})
 
 if(${PLASMA_RENDERER} MATCHES "Vulkan")
   set(rendererSource
+        ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanEnum.hpp
         ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanRenderer.cpp
         ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanRenderer.hpp
         ${CMAKE_CURRENT_LIST_DIR}/../Vulkan/VulkanInitialization.hpp

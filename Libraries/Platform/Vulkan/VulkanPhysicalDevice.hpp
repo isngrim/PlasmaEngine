@@ -38,12 +38,12 @@ namespace Plasma
         Array<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(selectionData.mInstance, &deviceCount, devices.Data());
 
-        for(const auto& device : devices)
+        for(int i = 0 ; i < devices.Size(); i++)
         {
-            bool isSuitable = selectionData.mSuitabilityData.mDeviceSuitabilityFn(device, &selectionData.mSuitabilityData);
+            bool isSuitable = selectionData.mSuitabilityData.mDeviceSuitabilityFn(devices[i], &selectionData.mSuitabilityData);
             if(isSuitable)
             {
-                resultData.mPhysicalDevice = device;
+                resultData.mPhysicalDevice = devices[i];
                 break;
             }
         }

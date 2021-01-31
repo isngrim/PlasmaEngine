@@ -5,9 +5,9 @@ namespace Plasma
 
     inline bool CheckExtensionSupprt(const char* checkExtension, Array<VkExtensionProperties> availableLayers)
     {
-        for (const auto& extension : availableLayers)
+        for(int i = 0; i < availableLayers.Size(); i++)
         {
-            if (strcmp(extension.extensionName, checkExtension) == 0)
+            if (strcmp(availableLayers[i].extensionName, checkExtension) == 0)
             {
                 return true;
             }
@@ -29,14 +29,15 @@ namespace Plasma
 
         Array<VkLayerProperties> availableLayers(layerCount);
         vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.Data());
-        
-        for(const char* layerName : GetValidationLayers())
+
+        Array<const char*> layers = GetValidationLayers();
+        for(int i = 0; i < layers.Size(); i++)
         {
             bool layerFound = false;
 
-            for(const auto& layerProperties : availableLayers)
+            for(int i = 0; i < availableLayers.Size(); i++)
             {
-                if(strcmp(layerName, layerProperties.layerName) == 0)
+                if(strcmp(layers[i], availableLayers[i].layerName) == 0)
                 {
                     layerFound = true;
                     break;
@@ -57,15 +58,11 @@ namespace Plasma
     {
         if(messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
         {
-            DoNotifyError("Validation Error:", pCallbackData->pMessage);
-        }
-        else if(messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-        {
-            DoNotifyWarning("Validation Warning:", pCallbackData->pMessage);
+            Error(pCallbackData->pMessage);
         }
         else
         {
-            DoNotify("Validation Log:", pCallbackData->pMessage, "LargeMagnifyingGlass", NotifyType::General);
+            Warn(pCallbackData->pMessage);
         }
 
         return VK_FALSE;
