@@ -7,6 +7,9 @@
     #define VK_USE_PLATFORM_WIN32_KHR
 #endif
 
+#define VOLK_IMPLEMENTATION
+#include "volk.h"
+
 #include "VulkanHeaders/vulkan.h"
 #include "VulkanHeaders/vulkan_core.h"
 #include "VulkanHeaders/vk_sdk_platform.h"

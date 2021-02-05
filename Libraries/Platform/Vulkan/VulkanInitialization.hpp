@@ -16,6 +16,9 @@ namespace Plasma
 		    ErrorIf(true, "Debug Layers Not Supported");
 		}
 
+    	VkResult res = volkInitialize();
+    	Assert(res == VK_SUCCESS);
+
         VkApplicationInfo applicationInfo = {};
         applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
         applicationInfo.pApplicationName = initializeData.mTitle.c_str();
@@ -83,8 +86,8 @@ namespace Plasma
 
         {
 			uint32_t deviceCount = 0;
-			VkResult res = vkEnumeratePhysicalDevices(vulkanRuntimeData.mInstance, &deviceCount, nullptr);
-			ErrorIf(res == VK_SUCCESS);
+			res = vkEnumeratePhysicalDevices(vulkanRuntimeData.mInstance, &deviceCount, nullptr);
+			Assert(res == VK_SUCCESS);
 
 			if (deviceCount == 0)
 			{
@@ -93,7 +96,7 @@ namespace Plasma
 
 			Array<VkPhysicalDevice> devices(deviceCount);
 			res = vkEnumeratePhysicalDevices(vulkanRuntimeData.mInstance, &deviceCount, devices.Data());
-			ErrorIf(res == VK_SUCCESS);
+			Assert(res == VK_SUCCESS);
 
 			Array<const char*> required_deviceExtensions;
           	required_deviceExtensions.PushBack(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
@@ -106,10 +109,10 @@ namespace Plasma
 
 				uint32_t extensionCount;
 				VkResult res = vkEnumerateDeviceExtensionProperties(devices[i], nullptr, &extensionCount, nullptr);
-				assert(res == VK_SUCCESS);
+				Assert(res == VK_SUCCESS);
 				Array<VkExtensionProperties> available_deviceExtensions(extensionCount);
 				res = vkEnumerateDeviceExtensionProperties(devices[i], nullptr, &extensionCount, available_deviceExtensions.Data());
-				ErrorIf(res == VK_SUCCESS);
+				Assert(res == VK_SUCCESS);
 
 				for(int j = 0; j < required_deviceExtensions.Size(); j++)
 				{
@@ -123,27 +126,27 @@ namespace Plasma
 
 				// Swapchain query:
 				res = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(devices[i], vulkanRuntimeData.mSurface, &vulkanRuntimeData.mSwapchainCapabilities);
-				ErrorIf(res == VK_SUCCESS);
+				Assert(res == VK_SUCCESS);
 
 				uint32_t formatCount;
 				res = vkGetPhysicalDeviceSurfaceFormatsKHR(devices[i], vulkanRuntimeData.mSurface, &formatCount, nullptr);
-				ErrorIf(res == VK_SUCCESS);
+				Assert(res == VK_SUCCESS);
 
 				if (formatCount != 0)
 				{
 					vulkanRuntimeData.mSwapchainFormats.Resize(formatCount);
 					res = vkGetPhysicalDeviceSurfaceFormatsKHR(devices[i], vulkanRuntimeData.mSurface, &formatCount, vulkanRuntimeData.mSwapchainFormats.Data());
-					ErrorIf(res == VK_SUCCESS);
+					Assert(res == VK_SUCCESS);
 				}
 
 				uint32_t presentModeCount;
 				res = vkGetPhysicalDeviceSurfacePresentModesKHR(devices[i], vulkanRuntimeData.mSurface, &presentModeCount, nullptr);
-				ErrorIf(res == VK_SUCCESS);
+				Assert(res == VK_SUCCESS);
 
 				if (presentModeCount != 0) {
 					vulkanRuntimeData.mSwapchainPresentModes.Resize(presentModeCount);
 					res = vkGetPhysicalDeviceSurfacePresentModesKHR(devices[i], vulkanRuntimeData.mSurface, &presentModeCount, vulkanRuntimeData.mSwapchainPresentModes.Data());
-					ErrorIf(res == VK_SUCCESS);
+					Assert(res == VK_SUCCESS);
 				}
 
 				suitable = !vulkanRuntimeData.mSwapchainFormats.Empty() && !vulkanRuntimeData.mSwapchainPresentModes.Empty();
@@ -254,17 +257,17 @@ namespace Plasma
 				DoNotifyError("Vulkan Physical Device Error", "Failed to find a suitable GPU");
 			}
 
-			ErrorIf(properties2.properties.limits.timestampComputeAndGraphics == VK_TRUE);
+			Assert(properties2.properties.limits.timestampComputeAndGraphics == VK_TRUE);
 
 			vkGetPhysicalDeviceFeatures2(vulkanRuntimeData.mPhysicalDevice, &vulkanFeatureData.mFeatures2);
 
-			ErrorIf(vulkanFeatureData.mFeatures2.features.imageCubeArray == VK_TRUE);
-			ErrorIf(vulkanFeatureData.mFeatures2.features.independentBlend == VK_TRUE);
-			ErrorIf(vulkanFeatureData.mFeatures2.features.geometryShader == VK_TRUE);
-			ErrorIf(vulkanFeatureData.mFeatures2.features.samplerAnisotropy == VK_TRUE);
-			ErrorIf(vulkanFeatureData.mFeatures2.features.shaderClipDistance == VK_TRUE);
-			ErrorIf(vulkanFeatureData.mFeatures2.features.textureCompressionBC == VK_TRUE);
-			ErrorIf(vulkanFeatureData.mFeatures2.features.occlusionQueryPrecise == VK_TRUE);
+			Assert(vulkanFeatureData.mFeatures2.features.imageCubeArray == VK_TRUE);
+			Assert(vulkanFeatureData.mFeatures2.features.independentBlend == VK_TRUE);
+			Assert(vulkanFeatureData.mFeatures2.features.geometryShader == VK_TRUE);
+			Assert(vulkanFeatureData.mFeatures2.features.samplerAnisotropy == VK_TRUE);
+			Assert(vulkanFeatureData.mFeatures2.features.shaderClipDistance == VK_TRUE);
+			Assert(vulkanFeatureData.mFeatures2.features.textureCompressionBC == VK_TRUE);
+			Assert(vulkanFeatureData.mFeatures2.features.occlusionQueryPrecise == VK_TRUE);
 			if (vulkanFeatureData.mFeatures2.features.tessellationShader == VK_TRUE)
 			{
 				mDriverSupport.mTesselation = true;
@@ -276,15 +279,15 @@ namespace Plasma
 
 			if (vulkanFeatureData.mRaytracingFeatures.rayTracingPipeline == VK_TRUE)
 			{
-				ErrorIf(vulkanFeatureData.mAccelerationStructureFeatures.accelerationStructure == VK_TRUE);
-				ErrorIf(vulkanFeatureData.mFeatures1_2.bufferDeviceAddress == VK_TRUE);
+				Assert(vulkanFeatureData.mAccelerationStructureFeatures.accelerationStructure == VK_TRUE);
+				Assert(vulkanFeatureData.mFeatures1_2.bufferDeviceAddress == VK_TRUE);
 				mDriverSupport.mRaytracing = true;
 				vulkanRuntimeData.mShaderIdentifierSize = vulkanPropertyData.mRaytracingProperties.shaderGroupHandleSize;
 			}
 			if (vulkanFeatureData.mRaytracingQueryFeatures.rayQuery == VK_TRUE)
 			{
-				ErrorIf(vulkanFeatureData.mAccelerationStructureFeatures.accelerationStructure == VK_TRUE);
-				ErrorIf(vulkanFeatureData.mFeatures1_2.bufferDeviceAddress == VK_TRUE);
+				Assert(vulkanFeatureData.mAccelerationStructureFeatures.accelerationStructure == VK_TRUE);
+				Assert(vulkanFeatureData.mFeatures1_2.bufferDeviceAddress == VK_TRUE);
 				mDriverSupport.mRaytracingInline = true;
 			}
 			if (vulkanFeatureData.mMeshShaderFeatures.meshShader == VK_TRUE && vulkanFeatureData.mMeshShaderFeatures.taskShader == VK_TRUE)
@@ -329,7 +332,7 @@ namespace Plasma
 			{
 				VkBool32 presentSupport = false;
 				VkResult res = vkGetPhysicalDeviceSurfaceSupportKHR(vulkanRuntimeData.mPhysicalDevice, (uint32_t)familyIndex, vulkanRuntimeData.mSurface, &presentSupport);
-				assert(res == VK_SUCCESS);
+				Assert(res == VK_SUCCESS);
 
 				if (vulkanRuntimeData.mPresentFamily < 0 && queueFamily.queueCount > 0 && presentSupport) {
 					vulkanRuntimeData.mPresentFamily = familyIndex;
@@ -409,8 +412,10 @@ namespace Plasma
 			}
 
 			res = vkCreateDevice(vulkanRuntimeData.mPhysicalDevice, &createInfo, nullptr, &vulkanRuntimeData.mDevice);
-			ErrorIf(res == VK_SUCCESS);
+			Assert(res == VK_SUCCESS);
 
+			volkLoadDevice(vulkanRuntimeData.mDevice);
+			
 			vkGetDeviceQueue(vulkanRuntimeData.mDevice, vulkanRuntimeData.mGraphicsFamily, 0, &vulkanRuntimeData.mGraphicsQueue);
 			vkGetDeviceQueue(vulkanRuntimeData.mDevice, vulkanRuntimeData.mPresentFamily, 0, &vulkanRuntimeData.mPresentQueue);
 			vkGetDeviceQueue(vulkanRuntimeData.mDevice, vulkanRuntimeData.mCopyFamily, 0, &vulkanRuntimeData.mCopyQueue);

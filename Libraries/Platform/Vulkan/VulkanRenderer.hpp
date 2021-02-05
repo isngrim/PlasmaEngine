@@ -1,7 +1,5 @@
 #pragma once
 
-#include "VulkanHeaders/vulkan_core.h"
-
 namespace Plasma
 {
     class VulkanRendeer : public Renderer

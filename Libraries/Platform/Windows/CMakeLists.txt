@@ -99,4 +99,8 @@ target_link_libraries(Platform
     tracy
 )
 
+if(${PLASMA_RENDERER} MATCHES "Vulkan")
+target_link_libraries(Platform PRIVATE volk)
+endif()
+
 set_target_properties( Platform PROPERTIES FOLDER "PlasmaEngine" )
