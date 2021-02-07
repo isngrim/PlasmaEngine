@@ -67,7 +67,6 @@ plasma_target_includes(Gameplay
     Common
     Lightning
     Engine
-    LightningShaders
     tracy
 )
 

@@ -16,7 +16,6 @@ plasma_target_includes(Startup
   PUBLIC
     Common
     Geometry
-    Graphics
     tracy
 )
 

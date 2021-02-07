@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12.1 FATAL_ERROR)
 
 set(CMAKE_CONFIGURATION_TYPES Debug RelWithDebInfo Release MinSizeRel)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PlasmaEditor)
+#set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PlasmaEditor)
 
 find_program(PLASMA_IWYU_PATH NAMES include-what-you-use iwyu)
 if(PLASMA_IWYU_PATH)
@@ -16,9 +16,6 @@ if(PLASMA_CCACHE_PATH)
 endif()
 
 project(Plasma)
-
-set(PLASMA_RENDERER "OpenGL" CACHE STRING "Rendering backend used by the engine")
-set_property(CACHE PLASMA_RENDERER PROPERTY STRINGS OpenGL DirectX12 Vulkan) 
 
 add_definitions(-DPlasmaMsSinceEpoch=${PLASMA_MS_SINCE_EPOCH})
 add_definitions(-DPlasmaBranchName="${PLASMA_BRANCH}")
@@ -41,7 +38,6 @@ add_definitions(-DPlasmaPlatformName="${PLASMA_PLATFORM}")
 add_definitions(-DPlasmaToolchain${PLASMA_TOOLCHAIN}=1)
 add_definitions(-DPlasmaToolchainName="${PLASMA_TOOLCHAIN}")
 add_definitions(-DPlasmaRendererName="${PLASMA_RENDERER}")
-add_definitions(-DPlasmaRenderer${PLASMA_RENDERER})
 
 set(PLASMA_CORE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(PLASMA_CMAKE_DIR ${PLASMA_CORE_DIR}/CMakeFiles/)

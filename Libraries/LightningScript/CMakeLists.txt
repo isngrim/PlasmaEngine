@@ -22,7 +22,6 @@ plasma_target_includes(LightningScript
     Common
     tracy
     Geometry
-    Editor
 )
 
 set_target_properties( LightningScript PROPERTIES FOLDER "PlasmaEngine/Lightning" )
