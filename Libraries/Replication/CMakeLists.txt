@@ -52,5 +52,3 @@ plasma_target_includes(Replication
     Geometry
     tracy
 )
-
-set_target_properties( Replication PROPERTIES FOLDER "PlasmaEngine" )

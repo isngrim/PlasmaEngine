@@ -50,5 +50,3 @@ plasma_target_includes(Serialization
     Common
     tracy
 )
-
-set_target_properties( Serialization PROPERTIES FOLDER "PlasmaEngine" )

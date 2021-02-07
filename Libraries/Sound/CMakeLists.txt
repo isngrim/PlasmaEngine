@@ -81,5 +81,3 @@ plasma_target_includes(Sound
     Opus
     tracy
 )
-
-set_target_properties( Sound PROPERTIES FOLDER "PlasmaEngine" )

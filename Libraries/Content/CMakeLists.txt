@@ -98,5 +98,3 @@ plasma_target_includes(Content
     Nvtt
     tracy
 )
-
-set_target_properties( Content PROPERTIES FOLDER "PlasmaEngine" )

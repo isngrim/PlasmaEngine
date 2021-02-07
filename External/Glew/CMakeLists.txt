@@ -16,5 +16,3 @@ target_include_directories(Glew
   PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/Repo/include/
 )
-
-set_target_properties( Glew PROPERTIES FOLDER "External/Glew" )

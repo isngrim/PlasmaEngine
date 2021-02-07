@@ -271,6 +271,3 @@ plasma_target_includes(Common
   PUBLIC
     tracy
 )
-
-
-set_target_properties( Common PROPERTIES FOLDER "PlasmaEngine" )

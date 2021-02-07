@@ -287,5 +287,3 @@ plasma_target_includes(Editor
     Scintilla
     Common
 )
-
-set_target_properties( Editor PROPERTIES FOLDER "PlasmaEditor" )

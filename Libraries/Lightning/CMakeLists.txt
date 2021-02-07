@@ -145,5 +145,3 @@ plasma_target_includes(Lightning
     Common
     tracy
 )
-
-set_target_properties( Lightning PROPERTIES FOLDER "PlasmaEngine/Lightning" )

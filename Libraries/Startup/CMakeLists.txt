@@ -18,5 +18,3 @@ plasma_target_includes(Startup
     Geometry
     tracy
 )
-
-set_target_properties( Startup PROPERTIES FOLDER "PlasmaEngine" )

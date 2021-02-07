@@ -82,5 +82,3 @@ plasma_target_includes(Geometry
     Lightning
     tracy
 )
-
-set_target_properties( Geometry PROPERTIES FOLDER "PlasmaEngine" )

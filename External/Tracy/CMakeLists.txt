@@ -28,5 +28,3 @@ message(STATUS "TRACY_PORT: ${TRACY_PORT}")
 target_compile_definitions(tracy PUBLIC TRACY_PORT=${TRACY_PORT})
 
 target_include_directories(tracy PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Repo")
-
-  set_target_properties( tracy PROPERTIES FOLDER "External/Tracy" )

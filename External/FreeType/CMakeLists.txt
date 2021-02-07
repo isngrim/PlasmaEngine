@@ -65,5 +65,3 @@ target_include_directories(FreeType
     ${CMAKE_CURRENT_LIST_DIR}/Repo/include/
     ${CMAKE_CURRENT_LIST_DIR}/Repo/include/freetype/
 )
-
-set_target_properties( FreeType PROPERTIES FOLDER "External/FreeType" )

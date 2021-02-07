@@ -40,5 +40,3 @@ plasma_target_includes(Support
     ZLib
     tracy
 )
-
-set_target_properties( Support PROPERTIES FOLDER "PlasmaEngine" )

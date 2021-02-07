@@ -68,5 +68,3 @@ plasma_target_includes(Networking
     Geometry
     tracy
 )
-
-set_target_properties( Networking PROPERTIES FOLDER "PlasmaEngine" )

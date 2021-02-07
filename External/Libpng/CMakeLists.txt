@@ -36,5 +36,3 @@ target_include_directories(Libpng
   PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/Repo/
 )
-
-set_target_properties( Libpng PROPERTIES FOLDER "External/Libpng" )

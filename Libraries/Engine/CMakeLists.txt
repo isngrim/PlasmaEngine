@@ -217,5 +217,3 @@ plasma_target_includes(Engine
     Lightning
     tracy
 )
-
-set_target_properties( Engine PROPERTIES FOLDER "PlasmaEngine" )

@@ -69,5 +69,3 @@ plasma_target_includes(Gameplay
     Engine
     tracy
 )
-
-set_target_properties( Gameplay PROPERTIES FOLDER "PlasmaEngine" )
