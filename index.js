@@ -1071,13 +1071,6 @@ const all = async (options) => {
   await prebuilt(options);
   // Build again so that platforms with a VFS will have the prebuilt content
   await build(options);
-  // Pack up the builds so that we can include the build for the launcher
-  await pack(options);
-  // Build again so that if the launcher uses a VFS it will have the packaged build
-  await build(options);
-  await documentation(options);
-  // Finally, pack everything up (with included builds and prebuilt content)
-  await pack(options);
 };
 
 const main = async () => {
