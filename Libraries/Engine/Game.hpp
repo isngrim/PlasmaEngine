@@ -8,10 +8,8 @@ class GameSession;
 class Composite;
 class OsWindowEvent;
 class Composite;
-class GameWidget;
 class GameEvent;
 class OsWindow;
-class GameWidget;
 
 namespace Events
 {
@@ -148,8 +146,6 @@ public:
   void InternalRenamed(Space* space);
   void InternalRemove(Space* space);
 
-  // Main widget holding the game
-  HandleOf<GameWidget> mGameWidget;
 
   /// Os Window holding the game. This is used to pass on Os events to the user,
   /// set resolution, set fullscreen, etc...

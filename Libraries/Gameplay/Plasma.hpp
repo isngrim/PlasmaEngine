@@ -4,7 +4,6 @@
 namespace Plasma
 {
 
-class Editor;
 
 // Plasma Static
 /// Global functionality exposed to Lightning script. Bound as "Plasma" to script
@@ -29,7 +28,6 @@ public:
 
   static Keyboard* GetKeyboard();
   static Mouse* GetMouse();
-  static Editor* GetEditor();
   static Engine* GetEngine();
   static Environment* GetEnvironment();
   static Gamepads* GetGamepads();

@@ -60,30 +60,14 @@ void CreateGame(OsWindow* mainWindow, StringParam projectFile, Cog* projectCog)
 
   PlasmaPrint("Creating game...\n");
 
-  IntVec2 intViewportSize = mainWindow->GetClientSize();
-  Vec2 mainViewportSize = Pixels(float(intViewportSize.x), float(intViewportSize.y));
-
-  RootWidget* rootWidget = new RootWidget(mainWindow);
-  rootWidget->SetSize(mainViewportSize);
-
-  // In game mode only one widget that has the viewport
-  GameWidget* gameWidget = new GameWidget(rootWidget);
-  gameWidget->TakeFocus();
-  gameWidget->SetSize(mainViewportSize);
 
   // Create the GameSession
   GameSession* game = PL::gEngine->CreateGameSession();
   game->mMainWindow = mainWindow;
   game->SetInEditor(false);
 
-  game->mGameWidget = gameWidget;
-  gameWidget->SetGameSession(game);
-
   game->Start();
 
-  // Run all parsed command-line arguments once after the game is fully loaded.
-  CommandManager* commandManager = CommandManager::GetInstance();
-  commandManager->RunParsedCommandsDelayed();
 }
 
 } // namespace Plasma

@@ -131,8 +131,6 @@ void CopyLibraryOut(StringParam outputDirectory, ContentLibrary* library, bool s
   }
 
   BoundType* lightningDocumentType = LightningTypeId(LightningDocumentResource);
-  BoundType* LightningPluginSourceType = LightningTypeId(LightningPluginSource);
-  BoundType* lightningPluginLibraryType = LightningTypeId(LightningPluginLibrary);
 
   int itemsDone = 0;
   float librarySize = (float)library->GetContentItems().Size();
@@ -153,8 +151,7 @@ void CopyLibraryOut(StringParam outputDirectory, ContentLibrary* library, bool s
         BoundType* resourceType = MetaDatabase::FindType(entry.Type);
 
         // Skip lightning resource types
-        if (resourceType->IsA(lightningDocumentType) || resourceType->IsA(LightningPluginSourceType) ||
-            resourceType->IsA(lightningPluginLibraryType))
+        if (resourceType->IsA(lightningDocumentType))
         {
           continue;
         }
@@ -323,225 +320,6 @@ HashSet<String> ExportTargetList::GetActiveTargets()
   return activeTargets;
 }
 
-ExportUI::ExportUI(Composite* parent) : Composite(parent)
-{
-  this->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(0, 2), Thickness::cZero));
-
-  new Label(this, cText, "Application Name:");
-  mApplicationName = new TextBox(this);
-  mApplicationName->SetEditable(true);
-
-  Cog* projectCog = PL::gEditor->GetProjectCog();
-  ProjectSettings* projectSettings = PL::gEngine->GetProjectSettings();
-  ExportSettings* exportSettings = HasOrAdd<ExportSettings>(projectCog);
-  if (projectSettings)
-    mApplicationName->SetText(projectSettings->GetProjectName());
-
-  new Label(this, cText, "Export Path:");
-
-  Composite* pathRow = new Composite(this);
-  pathRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
-
-  mExportPath = new TextBox(pathRow);
-  mExportPath->SetEditable(true);
-  mExportPath->SetText(
-      FilePath::Combine(GetUserDocumentsApplicationDirectory(), "Exports", projectSettings->GetProjectName()));
-  mExportPath->SetSizing(SizeAxis::X, SizePolicy::Flex, Pixels(200));
-
-  TextButton* pathSelectButton = new TextButton(pathRow);
-  pathSelectButton->SetText("...");
-  pathSelectButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(40));
-  ConnectThisTo(pathSelectButton, Events::ButtonPressed, OnSelectPath);
-
-  mTreeView = new TreeView(this);
-  mTreeView->SetMinSize(Pixels(200, 200));
-  mTreeView->SetSizing(SizeAxis::Y, SizePolicy::Flex, 1.0f);
-
-  SetTreeFormatting();
-
-  mSource = new ExportTargetSource(&mTargetList);
-  mTreeView->SetDataSource(mSource);
-
-  Composite* buttonRow = new Composite(this);
-  buttonRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
-  {
-    TextButton* exportButton = new TextButton(buttonRow);
-    exportButton->SetText("Export");
-    exportButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
-    ConnectThisTo(exportButton, Events::ButtonPressed, OnExportApplication);
-
-    Composite* temp = new Composite(buttonRow);
-    temp->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(10));
-
-    TextButton* exportContentButton = new TextButton(buttonRow);
-    exportContentButton->SetText("Export Content");
-    exportContentButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(100));
-    ConnectThisTo(exportContentButton, Events::ButtonPressed, OnExportContentFolder);
-
-    temp = new Composite(buttonRow);
-    temp->SetSizing(SizeAxis::X, SizePolicy::Flex, 1);
-
-    TextButton* cancelButton = new TextButton(buttonRow);
-    cancelButton->SetText("Cancel");
-    cancelButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
-    ConnectThisTo(cancelButton, Events::ButtonPressed, OnCancel);
-  }
-}
-
-ExportUI::~ExportUI()
-{
-  SafeDelete(mSource);
-}
-
-void ExportUI::SetTreeFormatting()
-{
-  TreeFormatting formatting;
-  formatting.Flags.SetFlag(FormatFlags::ShowHeaders);
-
-  // Name column
-  ColumnFormat* format = &formatting.Columns.PushBack();
-  format->Index = formatting.Columns.Size() - 1;
-  format->Name = CommonColumns::Name;
-  format->ColumnType = ColumnType::Flex;
-  format->FlexSize = 3;
-  format->HeaderName = "Target Platform";
-  format->Editable = false;
-
-  // Export column
-  format = &formatting.Columns.PushBack();
-  format->Index = formatting.Columns.Size() - 1;
-  format->Name = "Export";
-  format->ColumnType = ColumnType::Fixed;
-  format->FixedSize = Pixels(60, 20);
-  format->Editable = false;
-  format->HeaderName = "Export";
-  format->CustomEditor = cDefaultBooleanEditor;
-
-  mTreeView->SetFormat(formatting);
-}
-
-void ExportUI::OpenExportWindow()
-{
-  Exporter* exporter = Exporter::GetInstance();
-
-  Window* window = new Window(PL::gEditor);
-  window->SetTitle("Export Project");
-  ExportUI* exportUi = new ExportUI(window);
-  window->SizeToContents();
-  window->SetSize(Pixels(340, 490));
-  CenterToWindow(PL::gEditor, window, false);
-
-  HashSet<String> targets;
-  forRange (StringParam target, exporter->mExportTargets.Keys())
-    targets.Insert(target);
-
-  Cog* projectCog = PL::gEditor->GetProjectCog();
-  ExportSettings* exportSettings = HasOrAdd<ExportSettings>(projectCog);
-
-  exportUi->SetAvailableTargets(targets);
-  exportUi->SetActiveTargets(exportSettings->mActiveTargets);
-
-  window->MoveToFront();
-}
-
-void ExportUI::OnExportApplication(Event* e)
-{
-  ExportTargetList* targetList = (ExportTargetList*)mSource->GetRoot();
-  if (targetList)
-  {
-    // Setup export settings
-    Exporter* exporter = Exporter::GetInstance();
-    exporter->mApplicationName = mApplicationName->GetText();
-    exporter->mOutputDirectory = mExportPath->GetText();
-    // Export to all to selected targets
-    HashSet<String> activeTargets = targetList->GetActiveTargets();
-    SaveActiveTargets(activeTargets);
-    exporter->ExportApplication(activeTargets);
-    // Close the export window
-    CloseTabContaining(this);
-    return;
-  }
-
-  Error("Something went wrong");
-}
-
-void ExportUI::OnExportContentFolder(Event* e)
-{
-  ExportTargetList* targetList = (ExportTargetList*)mSource->GetRoot();
-  if (targetList)
-  {
-    // Setup export settings
-    Exporter* exporter = Exporter::GetInstance();
-    exporter->mApplicationName = mApplicationName->GetText();
-    exporter->mOutputDirectory = mExportPath->GetText();
-    // Export to all to selected targets
-    HashSet<String> activeTargets = targetList->GetActiveTargets();
-    SaveActiveTargets(activeTargets);
-    exporter->ExportContent(activeTargets);
-    // Close the export window
-    CloseTabContaining(this);
-    return;
-  }
-
-  Error("Something went wrong");
-}
-
-void ExportUI::OnCancel(Event* e)
-{
-  CloseTabContaining(this);
-}
-
-void ExportUI::OnSelectPath(Event* e)
-{
-  // Set up the callback for when project file is selected
-  const String CallBackEvent = "ExportLocationSelected";
-  if (!GetDispatcher()->IsConnected(CallBackEvent, this))
-    ConnectThisTo(this, CallBackEvent, OnFolderSelected);
-
-  // Open the open file dialog
-  FileDialogConfig* config = FileDialogConfig::Create();
-  config->EventName = CallBackEvent;
-  config->CallbackObject = this;
-  config->Title = "Select a folder";
-  config->AddFilter("Project Export Folder", "*.none");
-  config->DefaultFileName = mExportPath->GetText();
-  config->StartingDirectory = mExportPath->GetText();
-  config->Flags |= FileDialogFlags::Folder;
-  PL::gEngine->has(OsShell)->SaveFile(config);
-}
-
-void ExportUI::OnFolderSelected(OsFileSelection* e)
-{
-  if (e->Files.Size() > 0)
-  {
-    String path = BuildString(FilePath::GetDirectoryPath(e->Files[0]), cDirectorySeparatorCstr);
-    mExportPath->SetText(path);
-  }
-}
-
-void ExportUI::SetAvailableTargets(HashSet<String>& targets)
-{
-  forRange (StringParam target, targets)
-  {
-    ExportTargetEntry* entry = new ExportTargetEntry(target);
-    mTargetList.AddEntry(entry);
-  }
-  mTreeView->Refresh();
-}
-
-void ExportUI::SetActiveTargets(HashSet<String>& targets)
-{
-  mTargetList.SetActiveTargets(targets);
-  mTreeView->Refresh();
-}
-
-void ExportUI::SaveActiveTargets(HashSet<String>& targets)
-{
-  Cog* projectCog = PL::gEditor->GetProjectCog();
-  if (ExportSettings* exportSettings = HasOrAdd<ExportSettings>(projectCog))
-    exportSettings->mActiveTargets = targets;
-}
-
 Exporter::Exporter()
 {
   // Add all available export targets
@@ -565,7 +343,6 @@ void Exporter::ExportGameProject(Cog* projectCog)
 {
   mProjectCog = projectCog;
   mPlay = false;
-  ExportUI::OpenExportWindow();
 }
 
 void Exporter::UpdateIcon(ProjectSettings* project, ExecutableResourceUpdater& updater)
@@ -588,10 +365,6 @@ void Exporter::UpdateIcon(ProjectSettings* project, ExecutableResourceUpdater& u
 
 void Exporter::SaveAndBuildContent()
 {
-  // Save all resources and build them so the
-  // output directory is up to date
-  Editor* editor = PL::gEditor;
-  editor->SaveAll(true);
 }
 
 void Exporter::ExportApplication(HashSet<String> exportTargets)

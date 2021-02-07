@@ -3,7 +3,6 @@
 
 // This is probably a bad dependency, but there's not many
 // other places that make sense for launching the background task
-#include "Editor/SimpleBackgroundTasks.hpp"
 
 namespace Plasma
 {
@@ -453,9 +452,7 @@ void LightningPluginSource::Clean()
 
 void LightningPluginSource::CompileConfiguration(StringParam configuration)
 {
-  // Don't allow compilation more than once at a time
-  if (mCompileTask != nullptr && mCompileTask->IsCompleted() == false)
-    return;
+
 
   if (CheckIdeAndInformUser() == false)
     return;
@@ -469,16 +466,7 @@ void LightningPluginSource::CompileConfiguration(StringParam configuration)
   String configurationBatchFilePath = FilePath::CombineWithExtension(codeDir, configurationBatchFileName, ".bat");
   String process = BuildString("cmd /C \"", configurationBatchFilePath, "\"");
 
-  ExecuteProcessTaskJob* job = new ExecuteProcessTaskJob(process);
-  mCompileTask = PL::gBackgroundTasks->Execute(job, taskName);
-  mCompileTask->mActivateOnCompleted = true;
-  // Listen for the task completion events
-  ConnectThisTo(mCompileTask, Events::BackgroundTaskCompleted, OnCompilationCompleted);
-  ConnectThisTo(mCompileTask, Events::BackgroundTaskFailed, OnCompilationCompleted);
-
-  // We can't get progress, so we'll have to estimate the time to complete
-  mCompileTask->mIndeterminate = true;
-  mCompileTask->mEstimatedTotalDuration = 15.0f;
+  
 
   // Other parts of the engine may want to know when a plugin is currently
   // compiling We decrement this above in the 'CompletedCompilation' callback
@@ -494,13 +482,6 @@ void LightningPluginSource::OnCompilationCompleted(BackgroundTaskEvent* e)
   LightningPluginSourceManager* manager = LightningPluginSourceManager::GetInstance();
   --manager->mCompilingPluginCount;
 
-  ExecuteProcessTaskJob* job = (ExecuteProcessTaskJob*)e->mTask->GetFinishedJob();
-  // Check for failure
-  if (e->State == BackgroundTaskState::Failed || job->mExitCode != 0)
-  {
-    String msg = String::Format("Plugin '%s' failed to compile", Name.c_str());
-    DoNotifyError("Plugin Compilation Failed", msg);
-  }
 }
 
 HandleOf<Resource> LightningPluginSourceLoader::LoadFromFile(ResourceEntry& entry)

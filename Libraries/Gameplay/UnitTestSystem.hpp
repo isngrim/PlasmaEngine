@@ -15,19 +15,6 @@ public:
   BoundType* mType;
   uint mIndex;
 };
-
-class WidgetPath
-{
-public:
-  WidgetPath();
-  WidgetPath(Widget* toWidget, RootWidget* fromRoot);
-
-  void Serialize(Serializer& stream);
-  Widget* Resolve(RootWidget* root);
-
-  Array<WidgetChildId> mPath;
-};
-
 class UnitTestSystem;
 
 // Unit Test Events
@@ -59,7 +46,6 @@ public:
   // UnitTestEvent interface
   void Serialize(Serializer& stream) override;
 
-  WidgetPath mWidgetPath;
   Vec2 mNormalizedWidgetOffset;
 };
 
@@ -163,7 +149,6 @@ public:
   void OnUnitTestPlayFileSelected(OsFileSelection* event);
 
   // Internals
-  Widget* mEmulatedCursor;
   UnitTestMode::Enum mMode;
   Array<UnitTestEvent*> mEvents;
 

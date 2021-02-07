@@ -7,8 +7,6 @@
 #include "LightningPlasma.hpp"
 #include "LightningPlugin.hpp"
 
-#include "Editor/EditorStandard.hpp"
-
 namespace Plasma
 {
 // Forward declarations

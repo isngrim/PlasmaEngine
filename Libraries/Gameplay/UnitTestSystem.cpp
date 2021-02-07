@@ -36,83 +36,6 @@ void WidgetChildId::Serialize(Serializer& stream)
   SerializeName(mIndex);
 }
 
-WidgetPath::WidgetPath()
-{
-}
-
-WidgetPath::WidgetPath(Widget* toWidget, RootWidget* fromRoot)
-{
-  while (toWidget != fromRoot)
-  {
-    ReturnIf(toWidget == nullptr, , "Encountered a null widget");
-    ReturnIf(toWidget->mParent == nullptr, , "Encountered a widget without a parent");
-
-    WidgetChildId& id = mPath.PushBack();
-    id.mName = toWidget->mName;
-    id.mType = LightningVirtualTypeId(toWidget);
-    id.mIndex = 0;
-
-    forRange (Widget& sibling, toWidget->mParent->GetChildren())
-    {
-      if (&sibling == toWidget)
-        break;
-
-      if (sibling.mName == id.mName && LightningVirtualTypeId(&sibling) == id.mType)
-        ++id.mIndex;
-    }
-
-    toWidget = toWidget->mParent;
-  }
-
-  Reverse(mPath.Begin(), mPath.End());
-}
-
-void WidgetPath::Serialize(Serializer& stream)
-{
-  SerializeName(mPath);
-}
-
-Widget* WidgetPath::Resolve(RootWidget* root)
-{
-  Composite* composite = root;
-  Widget* foundWidget = root;
-
-  Array<WidgetChildId>::range path = mPath.All();
-  forRange (WidgetChildId& childId, path)
-  {
-    size_t index = 0;
-    forRange (Widget& childWidget, composite->GetChildren())
-    {
-      if (childWidget.GetName() == childId.mName && LightningVirtualTypeId(&childWidget) == childId.mType)
-      {
-        if (index == childId.mIndex)
-        {
-          foundWidget = &childWidget;
-          composite = foundWidget->GetSelfAsComposite();
-
-          // If this widget isn't a composite, then we can't go any deeper into
-          // the tree
-          if (composite == nullptr)
-          {
-            // If the path is also empty, we found the leaf widget!
-            if (path.Empty())
-              return foundWidget;
-            // Otherwise we just hit a dead end
-            else
-              return nullptr;
-          }
-          break;
-        }
-        else
-        {
-          ++index;
-        }
-      }
-    }
-  }
-
-  return foundWidget;
-}
 
 // Unit Test Events
 static const String cUnitTestRecordOption("unitTestRecord");
@@ -154,7 +77,6 @@ LightningDefineType(UnitTestBaseMouseEvent, builder, type)
 
 void UnitTestBaseMouseEvent::Serialize(Serializer& stream)
 {
-  SerializeName(mWidgetPath);
   SerializeName(mNormalizedWidgetOffset);
 }
 
@@ -263,7 +185,6 @@ LightningDefineType(UnitTestSystem, builder, type)
 }
 
 UnitTestSystem::UnitTestSystem() :
-    mEmulatedCursor(nullptr),
     mMode(UnitTestMode::Stopped),
     mEventIndex(0),
     mFilesIndex(0)
@@ -377,7 +298,6 @@ void UnitTestSystem::RecordToPlasmaTestFile(StringParam plasmaTestFile)
   if (FileExists(plasmaTestFile))
     DeleteFile(plasmaTestFile);
 
-  PL::gEditor->SaveAll(false);
 
   // We create two directories so we can compare the beginning and the end
   String beginFolder = FilePath::Combine(directory, cProjectBegin);
@@ -533,12 +453,6 @@ void UnitTestSystem::SubProcessPlay()
   frameRateSettings->mLimitFrameRate = false;
 
   mMode = UnitTestMode::Playing;
-
-  if (mEmulatedCursor == nullptr)
-  {
-    mEmulatedCursor = GetRootWidget()->CreateAttached<Widget>(cCursor);
-    mEmulatedCursor->SetInteractive(false);
-  }
 }
 
 OsWindow* UnitTestSystem::SubProcessSetupWindow()
@@ -654,21 +568,12 @@ void UnitTestSystem::EnumerateFiles(StringParam directory,
 
 RootWidget* UnitTestSystem::GetRootWidget()
 {
-  InList<RootWidget>& rootWidgets = WidgetManager::GetInstance()->RootWidgets;
-  ReturnIf(rootWidgets.Empty(), nullptr, "Cannot use the UnitTestSystem without a RootWidget");
-
-  // We only work with the main window (the first root widget)
-  RootWidget* root = &rootWidgets.Front();
-  return root;
+  return nullptr;
 }
 
 OsWindow* UnitTestSystem::GetMainWindow()
 {
-  RootWidget* root = GetRootWidget();
-  if (root == nullptr)
-    return nullptr;
-
-  return root->GetOsWindow();
+  return nullptr;
 }
 
 void UnitTestSystem::HookKeyboardEvent(KeyboardEvent& event)
@@ -743,46 +648,15 @@ void UnitTestSystem::RecordBaseMouseEvent(UnitTestBaseMouseEvent* baseEvent, OsM
   Vec2 clientPos = ToVec2(event->ClientPosition);
 
   // Get the widget that the mouse is over
-  RootWidget* root = GetRootWidget();
-  Widget* overWidget = root->HitTest(clientPos, nullptr);
-  if (overWidget == nullptr)
-    overWidget = root;
+  RootWidget* root = GetRootWidget();           
 
-  // Compute the normalized coordinates of the cursor within the widget
-  Vec2 widgetClientTopLeft = overWidget->ToScreen(Vec2::cZero);
-  Vec2 size = overWidget->GetSize();
-  if (size.x <= 0 || size.y <= 0)
-    baseEvent->mNormalizedWidgetOffset = Vec2(0, 0);
-  else
-    baseEvent->mNormalizedWidgetOffset = (clientPos - widgetClientTopLeft) / size;
-
-  // Compute the path to the widget from the root via WidgetPath constructor
-  baseEvent->mWidgetPath = WidgetPath(overWidget, root);
+  baseEvent->mNormalizedWidgetOffset = Vec2(0, 0);
 
   RecordEvent(baseEvent);
 }
 
 void UnitTestSystem::ExecuteBaseMouseEvent(UnitTestBaseMouseEvent* baseEvent, OsMouseEvent* event)
 {
-  // If we can find a widget via the widget path, then use the normalized
-  // coordinates to compute a new position from inside the widget. This helps to
-  // ensure that, even if widgets move positions, mouse events such as down/up
-  // still occur on the correct widgets. If we cannot find a widget we use the
-  // original screen position and hope that it works!
-  Widget* foundWidget = baseEvent->mWidgetPath.Resolve(GetRootWidget());
-  if (foundWidget != nullptr)
-  {
-    Vec2 newClientPosition =
-        foundWidget->ToScreen(Vec2::cZero) + foundWidget->GetSize() * baseEvent->mNormalizedWidgetOffset;
-    event->ClientPosition = IntVec2((int)newClientPosition.x, (int)newClientPosition.y);
-  }
-
-  // Update the emulated cursor position (purely visual that cannot be
-  // interacted with)
-  mEmulatedCursor->SetTranslation(Vec3(ToVec2(event->ClientPosition), 0));
-  mEmulatedCursor->SetVisible(true);
-  mEmulatedCursor->SetActive(true);
-  mEmulatedCursor->MoveToFront();
 }
 
 void UnitTestSystem::RecordFile(StringParam sourceFile)

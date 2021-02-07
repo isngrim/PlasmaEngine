@@ -5,7 +5,6 @@ namespace Plasma
 {
 
 class Space;
-class Viewport;
 
 /// An individual entry from raycasting.
 struct RayCastEntry

@@ -394,8 +394,6 @@ LightningDefineType(PathFinderMesh, builder, type)
   PlasmaBindDependency(Transform);
   PlasmaBindEvent(Events::PathFinderGridFinished, PathFinderEvent<Vec3>);
 
-  LightningBindOverloadedMethod(SetMesh, LightningInstanceOverload(void, Mesh*));
-  LightningBindOverloadedMethod(SetMesh, LightningInstanceOverload(void, Mesh*, float));
 
   LightningBindMethod(AddVertex);
 
@@ -512,35 +510,6 @@ HandleOf<PathFinderRequest> PathFinderMesh::FindPathGenericThreaded(VariantParam
 StringParam PathFinderMesh::GetCustomEventName()
 {
   return Events::PathFinderMeshFinished;
-}
-
-void PathFinderMesh::SetMesh(Mesh* graphicsMesh)
-{
-  SetMesh(graphicsMesh, Math::DegToRad(90.0f));
-}
-
-void PathFinderMesh::SetMesh(Mesh* graphicsMesh, float maxSlope)
-{
-  mMesh.CopyIfNeeded();
-  PathFinderAlgorithmMesh* mesh = mMesh;
-
-  // Add all vertices
-  VertexBuffer& vertices = graphicsMesh->mVertices;
-  for (uint i = 0; i < vertices.GetVertexCount(); ++i)
-  {
-    Vec3 position = vertices.GetData<Vec3>(i, VertexSemantic::Position);
-    mesh->AddVertex(position);
-  }
-
-  // Add all triangles
-  IndexBuffer& indices = graphicsMesh->mIndices;
-  for (uint i = 0; i < indices.GetCount(); i += 3)
-  {
-    uint index0 = indices.Get(i);
-    uint index1 = indices.Get(i + 1);
-    uint index2 = indices.Get(i + 2);
-    mesh->AddPolygon(index0, index1, index2);
-  }
 }
 
 uint PathFinderMesh::AddVertex(Vec3Param pos)

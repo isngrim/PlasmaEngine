@@ -159,7 +159,6 @@ void PlasmaStartup::Initialize()
   LightningRegisterSharedHandleManager(CogHandleManager);
   LightningRegisterSharedHandleManager(ComponentHandleManager);
   LightningRegisterSharedHandleManager(ResourceHandleManager);
-  LightningRegisterSharedHandleManager(WidgetHandleManager);
   LightningRegisterSharedHandleManager(ContentItemHandleManager);
 
   RegisterCommonHandleManagers();
@@ -168,8 +167,6 @@ void PlasmaStartup::Initialize()
 
   // Graphics specific
   PlasmaRegisterThreadSafeReferenceCountedHandleManager(ThreadSafeReferenceCounted);
-  PlasmaRegisterThreadSafeReferenceCountedHandleManager(GraphicsBlendSettings);
-  PlasmaRegisterThreadSafeReferenceCountedHandleManager(GraphicsDepthSettings);
 
   // Setup the core Lightning library
   mLightningSetup = new LightningSetup(SetupFlags::DoNotShutdownMemory);
@@ -202,15 +199,11 @@ void PlasmaStartup::Initialize()
   SpatialPartitionLibrary::Initialize();
 
   EngineLibrary::Initialize();
-  GraphicsLibrary::Initialize();
   PhysicsLibrary::Initialize();
   NetworkingLibrary::Initialize();
   SoundLibrary::Initialize();
 
-  WidgetLibrary::Initialize();
   GameplayLibrary::Initialize();
-  EditorLibrary::Initialize();
-  UiWidgetLibrary::Initialize();
 
   LightningScriptLibrary::Initialize();
 
@@ -265,9 +258,6 @@ void PlasmaStartup::Startup()
   // Initialize all systems.
   engine->Initialize(initializer);
 
-  if (mLoadContent)
-    LoadContentConfig();
-
   PlasmaPrint("Creating main window.\n");
 
   OsShell* osShell = engine->has(OsShell);
@@ -318,12 +308,12 @@ void PlasmaStartup::Startup()
   OsWindow* mainWindow = osShell->CreateOsWindow(name, size, monitorClientPos, nullptr, mWindowStyle, state);
   mainWindow->SetMinClientSize(minSize);
 
-  // Pass window handle to initialize the graphics api
-  auto graphics = engine->has(GraphicsEngine);
-  graphics->CreateRenderer(mainWindow);
-
-  if (mUseSplashScreen)
-    graphics->SetSplashscreenLoading();
+  // // Pass window handle to initialize the graphics api
+  // auto graphics = engine->has(GraphicsEngine);
+  // graphics->CreateRenderer(mainWindow);
+  //
+  // if (mUseSplashScreen)
+  //   graphics->SetSplashscreenLoading();
 
   // Fix any issues related to Intel drivers (we call SetState twice on purpose to fix the driver issues).
   mainWindow->PlatformSpecificFixup();
@@ -381,15 +371,11 @@ void PlasmaStartup::Shutdown()
     // Shutdown in reverse order
     LightningScriptLibrary::Shutdown();
 
-    UiWidgetLibrary::Shutdown();
-    EditorLibrary::Shutdown();
     GameplayLibrary::Shutdown();
-    WidgetLibrary::Shutdown();
 
     SoundLibrary::Shutdown();
     NetworkingLibrary::Shutdown();
     PhysicsLibrary::Shutdown();
-    GraphicsLibrary::Shutdown();
     EngineLibrary::Shutdown();
 
     SpatialPartitionLibrary::Shutdown();
@@ -402,15 +388,11 @@ void PlasmaStartup::Shutdown()
     // ClearLibrary
     LightningScriptLibrary::GetInstance().ClearLibrary();
 
-    UiWidgetLibrary::GetInstance().ClearLibrary();
-    EditorLibrary::GetInstance().ClearLibrary();
     GameplayLibrary::GetInstance().ClearLibrary();
-    WidgetLibrary::GetInstance().ClearLibrary();
 
     SoundLibrary::GetInstance().ClearLibrary();
     NetworkingLibrary::GetInstance().ClearLibrary();
     PhysicsLibrary::GetInstance().ClearLibrary();
-    GraphicsLibrary::GetInstance().ClearLibrary();
     EngineLibrary::GetInstance().ClearLibrary();
 
     SpatialPartitionLibrary::GetInstance().ClearLibrary();
@@ -422,15 +404,11 @@ void PlasmaStartup::Shutdown()
     // Destroy
     LightningScriptLibrary::Destroy();
 
-    UiWidgetLibrary::Destroy();
-    EditorLibrary::Destroy();
     GameplayLibrary::Destroy();
-    WidgetLibrary::Destroy();
 
     SoundLibrary::Destroy();
     NetworkingLibrary::Destroy();
     PhysicsLibrary::Destroy();
-    GraphicsLibrary::Destroy();
     EngineLibrary::Destroy();
 
     SpatialPartitionLibrary::Destroy();

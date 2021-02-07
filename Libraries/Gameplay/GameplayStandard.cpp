@@ -9,7 +9,6 @@ namespace Plasma
 
 // Enums
 LightningDefineEnum(OrientationBases);
-LightningDefineEnum(SplineAnimatorMode);
 LightningDefineEnum(PathFinderStatus);
 
 LightningDefineRange(IndexedHalfEdgeMeshVertexArray::RangeType);
@@ -23,7 +22,6 @@ LightningDefineStaticLibrary(GameplayLibrary)
 
   // Enums
   LightningInitializeEnum(OrientationBases);
-  LightningInitializeEnum(SplineAnimatorMode);
   LightningInitializeEnum(PathFinderStatus);
 
   // Ranges
@@ -32,23 +30,13 @@ LightningDefineStaticLibrary(GameplayLibrary)
   LightningInitializeRangeAs(IndexedHalfEdgeFaceEdgeIndexArray::RangeType, "IndexedHalfEdgeFaceEdgeIndexArrayRange");
   LightningInitializeRangeAs(IndexedHalfEdgeMeshFaceArray::RangeType, "IndexedHalfEdgeMeshFaceArrayRange");
 
-  // Events
-  LightningInitializeType(MouseEvent);
-  LightningInitializeType(MouseFileDropEvent);
-  LightningInitializeType(ViewportMouseEvent);
-
-  LightningInitializeType(Viewport);
-  LightningInitializeType(ReactiveViewport);
-  LightningInitializeType(GameWidget);
 
   LightningInitializeType(TileMapSource);
   LightningInitializeType(Reactive);
   LightningInitializeType(ReactiveSpace);
-  LightningInitializeType(MouseCapture);
   LightningInitializeType(Orientation);
   LightningInitializeType(TileMap);
   LightningInitializeType(RandomContext);
-  LightningInitializeType(CameraViewport);
   LightningInitializeType(DefaultGameSetup);
   LightningInitializeType(PathFinderBaseEvent);
   LightningInitializeTypeAs(PathFinderEvent<Vec3>, "PathFinderEvent");
@@ -57,9 +45,6 @@ LightningDefineStaticLibrary(GameplayLibrary)
   LightningInitializeType(PathFinderRequest);
   LightningInitializeType(PathFinderGrid);
   LightningInitializeType(PathFinderMesh);
-
-  LightningInitializeType(SplineParticleEmitter);
-  LightningInitializeType(SplineParticleAnimator);
 
   LightningInitializeType(UnitTestSystem);
   LightningInitializeType(UnitTestEvent);
@@ -81,9 +66,6 @@ LightningDefineStaticLibrary(GameplayLibrary)
   LightningInitializeTypeAs(QuickHull3DInterface, "QuickHull3D");
 
   LightningInitializeTypeAs(PlasmaStatic, "Plasma");
-
-  // @trevor.sundberg: The Gameplay and Editor libraries are co-dependent
-  LightningTypeId(Editor)->AssertOnInvalidBinding = &IgnoreOnInvalidBinding;
 
   EngineLibraryExtensions::AddNativeExtensions(builder);
 }

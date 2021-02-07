@@ -4,7 +4,6 @@
 namespace Plasma
 {
 
-class SpriteSource;
 class PhysicsMesh;
 class Archetype;
 class TileMapSource;
@@ -37,11 +36,7 @@ struct SpriteOffset
   SpriteOffset()
   {
   }
-  SpriteOffset(HandleOf<SpriteSource> source, IntVec2 spriteOffset) : sprite(source), offset(spriteOffset)
-  {
-  }
 
-  HandleOf<SpriteSource> sprite;
   IntVec2 offset;
 };
 
@@ -95,7 +90,6 @@ public:
     size_t Hash() const;
 
     Archetype* GetArchetypeResource() const;
-    SpriteSource* GetSpriteResource() const;
     PhysicsMesh* GetCollisionResource() const;
   };
 
@@ -105,7 +99,6 @@ public:
 
   typedef HashMap<IntVec2, Tile> TileHashMap;
   typedef TileHashMap::range TileRange;
-  typedef HashMap<IntVec2, HandleOf<SpriteSource>> SpriteHashMap;
 
   TileMap();
   ~TileMap();
@@ -147,7 +140,6 @@ private:
   String FormatTileError(TileStatus::Enum status, IntVec2 pos, Tile tile);
 
   TileHashMap mTileMap;
-  SpriteHashMap mSpriteMap;
   bool mModified;
   bool mDirtySprites;
   bool mDirtyContours;

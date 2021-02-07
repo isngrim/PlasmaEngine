@@ -17,7 +17,6 @@ class Serializer;
 class Level;
 class Space;
 class GameSession;
-class GameWidget;
 class Transform;
 class ContentLibrary;
 class ResourcePackage;

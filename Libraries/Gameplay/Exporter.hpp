@@ -98,37 +98,6 @@ struct ExportTargetList
   Array<ExportTargetEntry*> SortedEntries;
 };
 
-class ExportUI : public Composite
-{
-public:
-  typedef ExportUI LightningSelf;
-
-  ExportUI(Composite* parent);
-  ~ExportUI();
-
-  static void OpenExportWindow();
-
-  void SetTreeFormatting();
-
-  // Event handlers
-  void OnExportApplication(Event* e);
-  void OnExportContentFolder(Event* e);
-  void OnCancel(Event* e);
-  void OnSelectPath(Event* e);
-  void OnFolderSelected(OsFileSelection* e);
-
-  void SetAvailableTargets(HashSet<String>& targets);
-  void SetActiveTargets(HashSet<String>& targets);
-  void SaveActiveTargets(HashSet<String>& targets);
-
-  TextBox* mApplicationName;
-  TextBox* mExportPath;
-
-  TreeView* mTreeView;
-  ExportTargetList mTargetList;
-  ExportTargetSource* mSource;
-};
-
 class Exporter : public ExplicitSingleton<Exporter, EventObject>
 {
 public:

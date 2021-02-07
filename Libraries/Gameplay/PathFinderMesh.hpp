@@ -235,12 +235,6 @@ public:
   HandleOf<PathFinderRequest> FindPathGenericThreaded(VariantParam start, VariantParam goal) override;
   StringParam GetCustomEventName() override;
 
-  // NavMesh Interface
-  /// Builds a
-  void SetMesh(Mesh* graphicsMesh);
-  void SetMesh(Mesh* graphicsMesh, float maxSlope);
-  // void SetMesh(PhysicsMesh* mesh);
-
   /// Returns the index of the newly created position.
   u32 AddVertex(Vec3Param pos);
 

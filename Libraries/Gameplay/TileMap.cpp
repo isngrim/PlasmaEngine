@@ -333,7 +333,6 @@ LightningDefineType(TileMap, builder, type)
   PlasmaBindComponent();
   PlasmaBindSetup(SetupMode::DefaultSerialization);
   PlasmaBindDependency(Transform);
-  PlasmaBindDependency(MultiSprite);
 
   LightningBindCustomGetterPropertyAs(GetSource, "Source");
   LightningBindFieldProperty(mMeshThickness);
@@ -385,11 +384,6 @@ Archetype* TileMap::Tile::GetArchetypeResource() const
       ->GetResource(ArchetypeResource, ResourceNotFound::ReturnNull);
 }
 
-SpriteSource* TileMap::Tile::GetSpriteResource() const
-{
-  return (SpriteSource*)PL::gResources->GetResourceManager(LightningTypeId(SpriteSource))
-      ->GetResource(SpriteResource, ResourceNotFound::ReturnNull);
-}
 
 PhysicsMesh* TileMap::Tile::GetCollisionResource() const
 {
@@ -410,7 +404,6 @@ void TileMap::Initialize(CogInitializer& initializer)
 
   mTestSpace = GetGameSession()->CreateEditorSpace(spaceArchetype);
   mTestSpace->has(TimeSpace)->SetPaused(true);
-  mTestSpace->has(GraphicsSpace)->mActive = false;
 
   if (GetSpace()->IsEditorMode() == true)
   {
@@ -422,7 +415,6 @@ void TileMap::Initialize(CogInitializer& initializer)
       IntVec2 pos = pair.first;
       Tile tile = pair.second;
 
-      mSpriteMap[pos] = tile.GetSpriteResource();
     }
 
     RefreshMultiSprite();
@@ -519,29 +511,6 @@ void TileMap::OnAllObjectsInitialized(CogInitializerEvent* event)
       }
     }
 
-    if (processSprites)
-    {
-      MultiSprite* thisSprite = GetOwner()->has(MultiSprite);
-      MultiSprite* multiSprite = cog->has(MultiSprite);
-
-      if (!cog->has(MultiSprite))
-      {
-        cog->AddComponentByName("MultiSprite");
-        multiSprite = cog->has(MultiSprite);
-
-        // Copy all component data
-        DataBlock block = SerializeObjectToDataBlock(thisSprite);
-        SerializeObjectFromDataBlock(block, multiSprite);
-        plDeallocate(block.Data);
-      }
-
-      for (uint i = 0; i < mergeObj.sprites.Size(); ++i)
-      {
-        Vec3 pos = mergeObj.position;
-        IntVec2 location = mergeObj.sprites[i].offset;
-        multiSprite->Set(location, mergeObj.sprites[i].sprite);
-      }
-    }
 
     Transform* transform = cog->has(Transform);
 
@@ -557,7 +526,6 @@ void TileMap::OnAllObjectsInitialized(CogInitializerEvent* event)
   }
 
   Cog* owner = GetOwner();
-  owner->has(MultiSprite)->mVisible = false;
 }
 
 void TileMap::SaveToTileMapSource(Serializer& stream)
@@ -625,12 +593,6 @@ void TileMap::SetTile(IntVec2 gridPos, Tile tile)
 {
   if (tile.GetArchetypeResource() == nullptr)
   {
-    if (mSpriteMap.Find(gridPos).Empty() == false)
-    {
-      mDirtySprites = true;
-      mSpriteMap.Erase(gridPos);
-    }
-
     TileHashMap::range range = mTileMap.Find(gridPos);
     if (range.Empty() == false)
     {
@@ -649,22 +611,6 @@ void TileMap::SetTile(IntVec2 gridPos, Tile tile)
       String error = FormatTileError(status, gridPos, tile);
       DoNotifyWarning("TileMap Error", error);
       return;
-    }
-
-    SpriteSource* sprite = tile.GetSpriteResource();
-
-    if (mSpriteMap.Find(gridPos).Empty() == false)
-    {
-      if (*mSpriteMap[gridPos] != sprite)
-      {
-        mSpriteMap[gridPos] = sprite;
-        mDirtySprites = true;
-      }
-    }
-    else
-    {
-      mSpriteMap[gridPos] = sprite;
-      mDirtySprites = true;
     }
 
     TileHashMap::range range = mTileMap.Find(gridPos);
@@ -751,12 +697,9 @@ TileStatus::Enum TileMap::ValidTile(Tile tile)
   */
 
   bool tilemapCollision = tile.GetCollisionResource() != nullptr;
-  bool tilemapSprites = tile.GetSpriteResource() != nullptr;
 
-  if (tile.Merge && !tilemapCollision && !tilemapSprites)
-    return TileStatus::InvalidMerge;
+  return TileStatus::InvalidMerge;
 
-  return ValidArchetype(tile.GetArchetypeResource(), tilemapCollision, tilemapSprites);
 }
 
 TileStatus::Enum TileMap::ValidArchetype(Archetype* archetype, bool tilemapCollision, bool tilemapSprites)
@@ -788,15 +731,6 @@ TileStatus::Enum TileMap::ValidConfiguration(Cog* cog, bool tilemapCollision, bo
       else if (!tilemapCollision && tilemapSprites)
         return TileStatus::ConflictColliderGraphical;
     }
-    else if (componentType->IsA(LightningTypeId(Graphical)))
-    {
-      // Using tilemap sprite and archetype has wrong component.
-      if (tilemapSprites && !componentType->IsA(LightningTypeId(MultiSprite)))
-        return TileStatus::ConflictMultiSprite;
-      // Using graphical from archetype and collision from tilemap.
-      else if (!tilemapSprites && tilemapCollision)
-        return TileStatus::ConflictColliderGraphical;
-    }
   }
 
   return TileStatus::Valid;
@@ -810,19 +744,7 @@ void TileMap::Modified()
 
 void TileMap::RefreshMultiSprite()
 {
-  MultiSprite* sprites = GetOwner()->has(MultiSprite);
-
-  sprites->Clear();
-
-  for (SpriteHashMap::range range = mSpriteMap.All(); !range.Empty(); range.PopFront())
-  {
-    SpriteHashMap::value_type pair = range.Front();
-    if (pair.second)
-      sprites->Set(pair.first, pair.second);
-  }
-
-  // sprites->UpdateAabb();
-  sprites->UpdateBroadPhaseAabb();
+ 
 }
 
 void TileMap::BuildContours()
@@ -879,7 +801,6 @@ void TileMap::MergeTile(IntVec2 pos, Tile tile)
       contour[points[i]].AddPoint(points[(i + 1) % size]);
   }
 
-  SpriteSource* sprite = tile.GetSpriteResource();
 
   // Check all tile adjacencies
   for (uint i = 0; i < 4; ++i)
@@ -925,17 +846,11 @@ void TileMap::MergeTile(IntVec2 pos, Tile tile)
       {
         if (OverlapEdges(adjObj.contours, contour, worldPos))
         {
-          if (sprite)
-            adjObj.sprites.PushBack(SpriteOffset(sprite, pos));
-
           mProcessed[pos] = foundId;
         }
       }
       else if (!adjObj.contours.Size() && !contour.Size())
       {
-        if (sprite)
-          adjObj.sprites.PushBack(SpriteOffset(sprite, pos));
-
         mProcessed[pos] = foundId;
       }
     }
@@ -985,12 +900,6 @@ void TileMap::MergeTile(IntVec2 pos, Tile tile)
 
     if (contour.Size())
       newMerge.contours = contour;
-
-    if (sprite)
-    {
-      IntVec2 offset = IntVec2((int)Math::Floor(newMerge.position.x), (int)Math::Floor(newMerge.position.y));
-      newMerge.sprites.PushBack(SpriteOffset(sprite, offset));
-    }
 
     mMergeId.PushBack(mMergeCounter);
     mProcessed[pos] = mMergeCounter;

@@ -201,9 +201,6 @@ public:
 
   // If valid a load is pending for next update
   HandleOf<Level> mPendingLevel;
-  // Allows CameraViewports to attach viewport to a space specific GameWidget
-  HandleOf<GameWidget> mGameWidgetOverride;
-
   // When editing and state change will mark the level as modified.
   bool mModified;
   // Have the objects contained in the level changed. Use for editor ui.

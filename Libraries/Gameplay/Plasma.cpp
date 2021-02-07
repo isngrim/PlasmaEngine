@@ -14,7 +14,6 @@ LightningDefineType(PlasmaStatic, builder, type)
 
   LightningBindGetter(Keyboard);
   LightningBindGetter(Mouse);
-  LightningBindGetter(Editor);
   LightningBindGetter(Engine);
   LightningBindGetter(Environment);
   LightningBindGetter(Gamepads);
@@ -153,10 +152,6 @@ Mouse* PlasmaStatic::GetMouse()
   return PL::gMouse;
 }
 
-Editor* PlasmaStatic::GetEditor()
-{
-  return PL::gEditor;
-}
 
 Engine* PlasmaStatic::GetEngine()
 {
@@ -233,8 +228,6 @@ void LightningScriptConnection::RaiseError(StringParam message)
   {
     String namedMessage = BuildString(function->Name, ": ", message);
     String fullMessage = location->GetFormattedStringWithMessage(MessageFormat::Python, namedMessage);
-    LightningScriptManager::GetInstance()->DispatchScriptError(
-        Events::UnhandledException, namedMessage, fullMessage, *location);
     return;
   }
 
