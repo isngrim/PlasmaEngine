@@ -11,7 +11,7 @@ Plasma Game engine is a C++ powered 2D and 3D game engine that is designed to be
 This is as simple as grabbing the Plasma Launcher from [https://plasmagameengine.com/](https://plasmagameengine.com/)
 
 ## Building the engine
-Building on Windows Easy:
+Building on Windows Easy (Does not currently build vulkan):
   - Have Visual Studio 2019
   - Download [Bootstrap File](https://github.com/PlasmaEngine/PlasmaEngine/releases/download/NA/Bootstrap.ps1)
   - Place Bootstap in the folder you want Plasma
@@ -20,7 +20,9 @@ Building on Windows Easy:
   - Follow Instructions
   
 Building on Windows:
-  - Install CMake and Node.js
+  - Install CMake
+  - Install Node.js
+  - Install VulkanSDK (Only requied if you want vulkan renderer)
   - Do a recusive clone of the git repo
   - Run init.bat
   - Run GenerateVS2019.bat
