@@ -281,6 +281,8 @@ void PlasmaStartup::Startup()
 
   String name = BuildString(GetOrganization(), " ", GetApplicationName());
 
+  RenderAPI::Enum activeAPI = RenderAPI::OpenGL;
+
   if (mWindowSettingsFromProjectCog)
   {
     WindowLaunchSettings* windowLaunch = mWindowSettingsFromProjectCog->has(WindowLaunchSettings);
@@ -289,6 +291,8 @@ void PlasmaStartup::Startup()
       size = windowLaunch->mWindowedResolution;
       if (windowLaunch->mLaunchFullscreen)
         state = WindowState::Fullscreen;
+
+      activeAPI = windowLaunch->mRendererApi;
     }
 
     ProjectSettings* projectSettings = mWindowSettingsFromProjectCog->has(ProjectSettings);
@@ -320,7 +324,7 @@ void PlasmaStartup::Startup()
 
   // Pass window handle to initialize the graphics api
   auto graphics = engine->has(GraphicsEngine);
-  graphics->CreateRenderer(mainWindow);
+  graphics->CreateRenderer(mainWindow, activeAPI);
 
   if (mUseSplashScreen)
     graphics->SetSplashscreenLoading();

@@ -44,19 +44,19 @@ void GameOrEditorStartup::UserInitialize()
     projectFile = FilePath::Combine(mainConfig->DataDirectory, "Fallback", "Fallback.plasmaproj");
   }
 
-  // The options defaults are already tailored to the Editor.
-  // If we're playing the game, we need to load the project Cog.
-  // We'll also potentially derive some window settings from the project.
+  if (projectFile.Empty())
+    projectFile = editorConfig->EditingProject;
+
   Cog* projectCog = nullptr;
+  projectCog = PL::gFactory->Create(PL::gEngine->GetEngineSpace(), projectFile, 0, nullptr);
+  if (projectCog == nullptr)
+  {
+	FatalEngineError("Failed load project '%s'", projectFile.c_str());
+    return Exit(1);
+  }
+  // The options defaults are already tailored to the Editor.
   if (playGame)
   {
-    projectCog = PL::gFactory->Create(PL::gEngine->GetEngineSpace(), projectFile, 0, nullptr);
-    if (projectCog == nullptr)
-    {
-      FatalEngineError("Failed load project '%s'", projectFile.c_str());
-      return Exit(1);
-    }
-
     // Since we don't create a resiziable wigdet/close button, etc.
     // for the game, then we want the typical OS border to appear.
     mWindowStyle = (WindowStyleFlags::Enum)(mWindowStyle & ~WindowStyleFlags::ClientOnly);

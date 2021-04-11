@@ -678,12 +678,16 @@ void GraphicsEngine::AddRendererJob(RendererJob* rendererJob)
     RendererThreadMain(mRendererJobQueue);
 }
 
-void GraphicsEngine::CreateRenderer(OsWindow* mainWindow)
+void GraphicsEngine::CreateRenderer(OsWindow* mainWindow, RenderAPI::Enum renderAPI)
 {
-  OsHandle mainWindowHandle = mainWindow->GetWindowHandle();
+
+  RendererInitData rendererInitData;
+  rendererInitData.mWindowHandle = mainWindow->GetWindowHandle();
+  rendererInitData.mClientSize = mainWindow->GetClientSize();
 
   CreateRendererJob* rendererJob = new CreateRendererJob();
-  rendererJob->mMainWindowHandle = mainWindowHandle;
+  rendererJob->mRenderInitData = rendererInitData;
+  rendererJob->mAPI = renderAPI;
   AddRendererJob(rendererJob);
   rendererJob->WaitOnThisJob();
 

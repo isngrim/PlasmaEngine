@@ -19,8 +19,7 @@ endif()
 
 project(Plasma)
 
-set(PLASMA_RENDERER "OpenGL" CACHE STRING "Rendering backend used by the engine")
-set_property(CACHE PLASMA_RENDERER PROPERTY STRINGS OpenGL DirectX12 Vulkan) 
+set(PlasmaVulkanInstaleld "Is Vulkan Enabled" OFF)
 
 add_definitions(-DPlasmaMsSinceEpoch=${PLASMA_MS_SINCE_EPOCH})
 add_definitions(-DPlasmaBranchName="${PLASMA_BRANCH}")
@@ -43,7 +42,6 @@ add_definitions(-DPlasmaPlatformName="${PLASMA_PLATFORM}")
 add_definitions(-DPlasmaToolchain${PLASMA_TOOLCHAIN}=1)
 add_definitions(-DPlasmaToolchainName="${PLASMA_TOOLCHAIN}")
 add_definitions(-DPlasmaRendererName="${PLASMA_RENDERER}")
-add_definitions(-DPlasmaRenderer${PLASMA_RENDERER})
 
 set(PLASMA_CORE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(PLASMA_CMAKE_DIR ${PLASMA_CORE_DIR}/CMakeFiles/)

@@ -4,10 +4,17 @@
 
 namespace Plasma
 {
+    struct RendererInitData
+    {
+      OsHandle mWindowHandle = nullptr;
+      IntVec2 mClientSize = IntVec2(1,1);
+    };
+
     // Implemented by api specific renderer (just call C++ delete on the renderer to
     // destroy it)
     class Renderer;
-    Renderer* CreateRendererOpenGL(OsHandle windowHandle, String& error);
+    Renderer* CreateRendererOpenGL(RendererInitData rendererInitData, String& error);
+    Renderer* CreateRendererOpenVK(RendererInitData rendererInitData, String& error);
 
     extern const String cPostVertex;
     StringParam GetCoreVertexFragmentName(CoreVertexType::Enum type);

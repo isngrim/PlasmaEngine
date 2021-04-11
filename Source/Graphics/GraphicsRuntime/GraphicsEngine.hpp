@@ -90,7 +90,7 @@ public:
 
   // Methods for making RendererJobs
   void AddRendererJob(RendererJob* rendererJob);
-  void CreateRenderer(OsWindow* mainWindow);
+  void CreateRenderer(OsWindow* mainWindow, RenderAPI::Enum renderAPI);
   void DestroyRenderer();
   void AddMaterial(Material* material);
   void AddMesh(Mesh* mesh);

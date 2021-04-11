@@ -67,6 +67,7 @@ target_link_libraries(PlasmaLauncher
     Geometry
     GraphicsRuntime
     RendererGL
+    RendererVK
     Libpng
     Meta
     NetworkCore

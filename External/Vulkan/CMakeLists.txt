@@ -1,0 +1,8 @@
+if(DEFINED ENV{VULKAN_SDK})
+  set(PlasmaVulkanInstaleld ON CACHE BOOL "Vulkan Enabled")
+  set(CurrentDirectory ${CMAKE_CURRENT_LIST_DIR})
+  set(VulkanSDKDir $ENV{VULKAN_SDK})
+  add_library(VulkanSDK STATIC IMPORTED GLOBAL)
+  set_target_properties(VulkanSDK PROPERTIES IMPORTED_LOCATION $ENV{VULKAN_SDK}/Lib/vulkan-1.lib)
+  target_include_directories(VulkanSDK INTERFACE $ENV{VULKAN_SDK}/include)
+endif()

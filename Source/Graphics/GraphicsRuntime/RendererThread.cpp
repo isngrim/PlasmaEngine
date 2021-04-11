@@ -99,17 +99,18 @@ void CreateRendererJob::Execute()
   {
     case RenderAPI::Vulkan:
     {
-      // Fallthrough    
+      PL::gRenderer = CreateRendererOpenVK(mRenderInitData, mError);
+      break;
     }
     case RenderAPI::OpenGL:
     {
-      PL::gRenderer = CreateRendererOpenGL(mMainWindowHandle, mError);
+      PL::gRenderer = CreateRendererOpenGL(mRenderInitData, mError);
       break;
     }
     default:
     {
       // OpenGL is the default renderer
-      PL::gRenderer = CreateRendererOpenGL(mMainWindowHandle, mError);
+      PL::gRenderer = CreateRendererOpenGL(mRenderInitData, mError);
       break;
     }
   }

@@ -30,6 +30,7 @@ target_link_libraries(PlasmaEditor
     Geometry
     GraphicsRuntime
     RendererGL
+    RendererVK
     Libpng
     Meta
     NetworkCore

@@ -68,9 +68,9 @@ OpenglRendererWindows::~OpenglRendererWindows()
   wglDeleteContext((HGLRC)mRenderContext);
 }
 
-Renderer* CreateRendererOpenGL(OsHandle windowHandle, String& error)
+Renderer* CreateRendererOpenGL(RendererInitData initData, String& error)
 {
-  return new OpenglRendererWindows(windowHandle, error);
+  return new OpenglRendererWindows(initData.mWindowHandle, error);
 }
 
 void plGlSetSwapInterval(OpenglRenderer* renderer, int interval)

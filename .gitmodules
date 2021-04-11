@@ -43,3 +43,6 @@
 [submodule "External/Libgit2/Repo"]
 	path = External/Libgit2/Repo
 	url = https://github.com/PlasmaEngine/Libgit2.git
+[submodule "External/Volk/Repo"]
+	path = External/Volk/Repo
+	url = https://github.com/zeux/volk.git

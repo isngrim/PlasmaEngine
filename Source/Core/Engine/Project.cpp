@@ -373,6 +373,7 @@ void WindowLaunchSettings::Serialize(Serializer& stream)
   // SerializeNameDefault(mUseLaunchOptionsPopup, false);
   SerializeNameDefault(mLaunchFullscreen, true);
   SerializeNameDefault(mWindowedResolution, IntVec2(1280, 720));
+  SerializeEnumNameDefault(RenderAPI, mRendererApi, RenderAPI::OpenGL);
 }
 
 LightningDefineType(FrameRateSettings, builder, type)

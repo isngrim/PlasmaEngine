@@ -86,7 +86,7 @@ class CreateRendererJob : public WaitRendererJob
 public:
   void Execute() override;
 
-  OsHandle mMainWindowHandle;
+  RendererInitData mRenderInitData;
   RenderAPI::Enum mAPI;
   String mError;
 };
